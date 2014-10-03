@@ -1,6 +1,6 @@
 <- $
 {run, compile} = require \LiveScript
-{any} = require \prelude-ls
+{any, foldl, first, break-list} = require \prelude-ls
 history = []
 
 lsc = $ \#ls-console
@@ -9,6 +9,9 @@ window.lsc-console = lsc.console do
 	command-validate: (line) ->
 		line != ''
 	command-handle: (line) ->
+		trimmed-line = line.trim!
+		return switch-next-section! if \next! == trimmed-line
+		return switch-prev-section! if (\prev! == trimmed-line or \back! == trimmed-line)
 		try 
 			lines = (history ++ [pre-script]).reduce do
 				(acc, a) -> acc + "\n_ = " + a
@@ -52,6 +55,7 @@ window.lsc-console = lsc.console do
 	autofocus: true
 	animate-scroll: true
 	prompt-history: true
+	fade-on-reset: false
 
 
 window.lsc-reset = ->
@@ -83,3 +87,57 @@ $ \.prompt .each ->
 			(if is-pre then "\n" else "") + $ @ .text!
 
 		lsc-console.focus!
+
+
+
+all-paths = do -> first <| ($ 'section[x-path]' .map (-> $ @ .attr \x-path) .to-array!) |> foldl do 
+	([acc, skip], a) ->
+		skip-next = (a.index-of \/) == -1
+		return [acc ++ [a], skip-next] if not skip
+		[acc, skip-next]
+	[[], false]
+
+$current-section = null
+current-path = null
+switch-section = (path) ->
+	return if not path or not path.length
+	lsc-console.reset!
+
+	$new-section = if (path.index-of \/ ) > -1 then $ "section[x-path='#path']" else $ "section[x-path='#path'] > section:first"
+	
+	$current-section.hide! if !!$current-section
+	$current-section.parent!.hide! if !!$current-section
+
+	$new-section.parent!.show!
+	$new-section.show!
+
+	$current-section := $new-section
+	current-path := path
+	window.location.hash = path
+
+window.add-event-listener \hashchange, ->
+	switch-section <| window.location.hash.substr 1
+
+
+switch-next-section = ->
+	[_, [_, next-path]] = all-paths |> break-list (== current-path)
+	return switch-section next-path if !!next-path
+	[
+		{
+			msg: "Out of bounds"
+			class-name: "jquery-console-message-error"
+		}
+	]
+
+switch-prev-section = ->
+	[[..., prev-path], _] = all-paths |> break-list (== current-path)
+	return switch-section prev-path if !!prev-path
+	[
+		{
+			msg: "Out of bounds"
+			class-name: "jquery-console-message-error"
+		}
+	]
+
+# on load
+switch-section <| (window.location.hash.substr 1) or \welcome

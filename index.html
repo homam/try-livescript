@@ -12,8 +12,8 @@
 
 		</div>
 		<div id="lessons">
-			<section id="welcome">
-				<section id="fancy">
+			<section x-path="welcome">
+				<section x-path="wlecome/fancy">
 					<p>
 						Try typing these out and see what happens (click to insert):
 						<code class='prompt' x-pre='{fold} = require \prelude-ls'>fold (+), 0, [1 to 100]</code>
@@ -23,17 +23,20 @@ is-prime = (x) ->
 do -> [1 to 100] |> sum . filter is-prime
 </pre>
 <pre class='prompt' x-no-history x-pre='{all, sqrt, filter, sum} = require \prelude-ls'>
-html <- $.get window.location.href .then
+html &lt;- $.get window.location.href .then
 alert "This page has #{$ html .text!.split '' .length} characters!"
 </pre>
 					</p>
 					<p>
 						LiveScript is a language that compiles to JavaScript. LiveScript has many features that assist in functional programming. Comparing to JavaScript or CoffeeScript, LiveScript syntax is noise-less and more flexible.
 					</p>
+					<p>
+						Type <code class='prompt'>next!</code> to go to the next step.
+					</p>
 				</section>
 			</section>
-			<section id="assignments">
-				<section id="assigments-basics">
+			<section x-path="assignments">
+				<section x-path="assigments/basics">
 				<p>
 					We define a variable by <code class='promot'>x = 42</code>
 					JavaScript <code>var</code> is not needed.
@@ -53,28 +56,34 @@ saturn =
 </pre>
 				</p>
 				</section>
-				<section id="assignments-tuples">
+				<section x-path="assigments/tuples">
 					<p>
-						This is a tuple: <code class='promot'>color = ['black', '#000000']</code>
+						This is a tuple: <code class='prompt'>color = ['white', 0xFFFFFF]</code>
 					</p>
 					<p>
 						You can use pattern matching to extract values from a tuple, list or an object.
+<pre class='prompt' x-no-history>
+[name, hex] = color
+"Hexadecimal value for color #name is: 0x#{hex.to-string 16}"
+</pre>
 					</p>
 				</section>
 			</section>
-			<section id="functions">
-				<p>
-					Defining functions is very lightweight in LiveScript: 
-					<code class='prompt'>add = (x, y) -> x + y</code>
-				</p>
-				<p>
-					We don't need paranthesis for invoking functions: 
-					<code class='prompt'>add 5, 18</code>
-				</p>
-				<p>
-					You can also call functions infix using backticks <code>`</code>:
-					<code class='prompt'>5 `add` 18</code> 
-				</p>
+			<section x-path="functions">
+				<section x-path="functions/basics">
+					<p>
+						Defining functions is very lightweight in LiveScript: 
+						<code class='prompt'>add = (x, y) -> x + y</code>
+					</p>
+					<p>
+						We don't need paranthesis for invoking functions: 
+						<code class='prompt'>add 5, 18</code>
+					</p>
+					<p>
+						You can also call functions infix using backticks <code>`</code>:
+						<code class='prompt'>5 `add` 18</code> 
+					</p>
+				</section>
 			</section>
 		</div>
 	</body>
