@@ -1,0 +1,15 @@
+{
+  "name": "try-livescript",
+  "version": "0.0.0",
+  "description": "Try LiveScript",
+  "main": "http-server .",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+  	"stylus": ">= 0.42.2",
+  	"LiveScript": "*"
+  },
+  "author": "Homam <homam@live.com> (http://homam.me/)",
+  "license": "ISC"
+}
