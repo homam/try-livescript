@@ -57,3 +57,6 @@ code.prompt,
 pre.prompt {
   cursor: pointer;
 }
+section[x-path] {
+  display: none;
+}

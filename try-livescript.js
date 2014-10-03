@@ -2,9 +2,9 @@
 (function(){
   var toString$ = {}.toString;
   $(function(){
-    var ref$, run, compile, any, history, lsc, preScript, noHistory, commandHandled;
+    var ref$, run, compile, any, foldl, first, breakList, history, lsc, preScript, noHistory, commandHandled, allPaths, $currentSection, currentPath, switchSection, switchNextSection, switchPrevSection;
     ref$ = require('LiveScript'), run = ref$.run, compile = ref$.compile;
-    any = require('prelude-ls').any;
+    ref$ = require('prelude-ls'), any = ref$.any, foldl = ref$.foldl, first = ref$.first, breakList = ref$.breakList;
     history = [];
     lsc = $('#ls-console');
     window.lscConsole = lsc.console({
@@ -13,7 +13,14 @@
         return line !== '';
       },
       commandHandle: function(line){
-        var lines, result, className, resultType, re, ex;
+        var trimmedLine, lines, result, className, resultType, re, ex;
+        trimmedLine = line.trim();
+        if ('next!' === trimmedLine) {
+          return switchNextSection();
+        }
+        if ('prev!' === trimmedLine || 'back!' === trimmedLine) {
+          return switchPrevSection();
+        }
         try {
           lines = (history.concat([preScript])).reduce(function(acc, a){
             return acc + "\n_ = " + a;
@@ -71,7 +78,8 @@
       },
       autofocus: true,
       animateScroll: true,
-      promptHistory: true
+      promptHistory: true,
+      fadeOnReset: false
     });
     window.lscReset = function(){
       history = [];
@@ -90,7 +98,7 @@
       preScript = null;
       return noHistory = false;
     };
-    return $('.prompt').each(function(){
+    $('.prompt').each(function(){
       return $(this).click(function(){
         var isPre, xPre, xNoHistory;
         isPre = 'PRE' === this.tagName;
@@ -100,5 +108,74 @@
         return lscConsole.focus();
       });
     });
+    allPaths = function(){
+      return first(foldl(function(arg$, a){
+        var acc, skip, skipNext;
+        acc = arg$[0], skip = arg$[1];
+        skipNext = a.indexOf('/') === -1;
+        if (!skip) {
+          return [acc.concat([a]), skipNext];
+        }
+        return [acc, skipNext];
+      }, [[], false])(
+      $('section[x-path]').map(function(){
+        return $(this).attr('x-path');
+      }).toArray()));
+    }();
+    $currentSection = null;
+    currentPath = null;
+    switchSection = function(path){
+      var $newSection;
+      if (!path || !path.length) {
+        return;
+      }
+      lscConsole.reset();
+      $newSection = path.indexOf('/') > -1
+        ? $("section[x-path='" + path + "']")
+        : $("section[x-path='" + path + "'] > section:first");
+      if (!!$currentSection) {
+        $currentSection.hide();
+      }
+      if (!!$currentSection) {
+        $currentSection.parent().hide();
+      }
+      $newSection.parent().show();
+      $newSection.show();
+      $currentSection = $newSection;
+      currentPath = path;
+      return window.location.hash = path;
+    };
+    window.addEventListener('hashchange', function(){
+      return switchSection(window.location.hash.substr(1));
+    });
+    switchNextSection = function(){
+      var ref$, _, ref1$, nextPath;
+      ref$ = breakList((function(it){
+        return it === currentPath;
+      }))(
+      allPaths), _ = ref$[0], ref1$ = ref$[1], _ = ref1$[0], nextPath = ref1$[1];
+      if (!!nextPath) {
+        return switchSection(nextPath);
+      }
+      return [{
+        msg: "Out of bounds",
+        className: "jquery-console-message-error"
+      }];
+    };
+    switchPrevSection = function(){
+      var ref$, ref1$, prevPath, _;
+      ref$ = breakList((function(it){
+        return it === currentPath;
+      }))(
+      allPaths), ref1$ = ref$[0], prevPath = ref1$[ref1$.length - 1], _ = ref$[1];
+      if (!!prevPath) {
+        return switchSection(prevPath);
+      }
+      return [{
+        msg: "Out of bounds",
+        className: "jquery-console-message-error"
+      }];
+    };
+    return switchSection(window.location.hash.substr(1) || 'welcome');
   });
 }).call(this);
