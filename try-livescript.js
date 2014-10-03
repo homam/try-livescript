@@ -2,10 +2,11 @@
 (function(){
   var toString$ = {}.toString;
   $(function(){
-    var ref$, run, compile, any, history, lsc, preScript, noHistory, commandHandled;
+    var ref$, run, compile, any, map, foldl, first, breakList, each, unique, history, autocompleteHistory, lsc, preScript, noHistory, commandHandled, allPaths, $currentSection, currentPath, switchSection, switchNextSection, switchPrevSection, $pres;
     ref$ = require('LiveScript'), run = ref$.run, compile = ref$.compile;
-    any = require('prelude-ls').any;
+    ref$ = require('prelude-ls'), any = ref$.any, map = ref$.map, foldl = ref$.foldl, first = ref$.first, breakList = ref$.breakList, each = ref$.each, unique = ref$.unique;
     history = [];
+    autocompleteHistory = [];
     lsc = $('#ls-console');
     window.lscConsole = lsc.console({
       promptLabel: '> ',
@@ -13,15 +14,32 @@
         return line !== '';
       },
       commandHandle: function(line){
-        var lines, result, className, resultType, re, ex;
+        var trimmedLine, lines, compiled, autocompleteList, re, m, result, className, resultType, ex;
+        trimmedLine = line.trim();
+        if ('next!' === trimmedLine) {
+          return switchNextSection();
+        }
+        if ('prev!' === trimmedLine || 'back!' === trimmedLine) {
+          return switchPrevSection();
+        }
         try {
           lines = (history.concat([preScript])).reduce(function(acc, a){
             return acc + "\n_ = " + a;
           }, "");
           line = line.trim();
-          result = eval(compile("<- (do)\n" + lines + "\n" + line, {
+          compiled = compile("<- (do)\n" + lines + "\n" + line, {
             bare: true
-          }));
+          });
+          autocompleteList = [];
+          re = /([\w\-\d]+)\s*=[^=]/ig;
+          while ((m = re.exec(compiled)) !== null) {
+            autocompleteList.push(m[1]);
+          }
+          autocompleteHistory = unique(autocompleteList);
+          result = eval(compiled);
+          if (result === undefined) {
+            return "";
+          }
           if ("1.1.1" === result.VERSION) {
             result = "{prelude}";
             className = 'type';
@@ -40,15 +58,15 @@
                   if ((ref$ = re.exec(v.toString())) != null) {
                     _ = ref$[0], args = ref$[1];
                   }
-                  if (!args && !(args != null && args.trim)) {
-                    debugger;
-                  }
                   return "(" + args.trim() + ") -> ...";
                 }
                 return v;
               });
             } else {
               result = result.toString();
+              if (result.indexOf("_curry.call(context, params) : f.apply(context, params);") > -1) {
+                result = "";
+              }
               className = 'type';
             }
           }
@@ -69,9 +87,19 @@
           className: "jquery-console-message-" + className
         }];
       },
+      completeHandle: function(line){
+        var autocompleteList;
+        autocompleteList = ['next!', 'back!'].concat(autocompleteHistory);
+        return autocompleteList.filter(function(it){
+          return it.lastIndexOf(line) === 0;
+        }).map(function(it){
+          return it.substring(line.length);
+        });
+      },
       autofocus: true,
       animateScroll: true,
-      promptHistory: true
+      promptHistory: true,
+      fadeOnReset: false
     });
     window.lscReset = function(){
       history = [];
@@ -90,7 +118,7 @@
       preScript = null;
       return noHistory = false;
     };
-    return $('.prompt').each(function(){
+    $('.prompt').each(function(){
       return $(this).click(function(){
         var isPre, xPre, xNoHistory;
         isPre = 'PRE' === this.tagName;
@@ -100,5 +128,92 @@
         return lscConsole.focus();
       });
     });
+    allPaths = function(){
+      return first(foldl(function(arg$, a){
+        var acc, skip, skipNext;
+        acc = arg$[0], skip = arg$[1];
+        skipNext = a.indexOf('/') === -1;
+        if (!skip) {
+          return [acc.concat([a]), skipNext];
+        }
+        return [acc, skipNext];
+      }, [[], false])(
+      $('section[x-path]').map(function(){
+        return $(this).attr('x-path');
+      }).toArray()));
+    }();
+    $currentSection = null;
+    currentPath = null;
+    switchSection = function(path){
+      var $newSection;
+      if (!path || !path.length) {
+        return;
+      }
+      lscReset();
+      $newSection = path.indexOf('/') > -1
+        ? $("section[x-path='" + path + "']")
+        : $("section[x-path='" + path + "'] > section:first");
+      each(function(it){
+        return history.push(it);
+      })(
+      $newSection.find('meta[name=x-pre]').map(function(){
+        return $(this).attr('value');
+      }).toArray());
+      if (!!$currentSection) {
+        $currentSection.hide();
+      }
+      if (!!$currentSection) {
+        $currentSection.parent().hide();
+      }
+      $newSection.parent().show();
+      $newSection.show();
+      $currentSection = $newSection;
+      currentPath = path;
+      return window.location.hash = path;
+    };
+    window.addEventListener('hashchange', function(){
+      return switchSection(window.location.hash.substr(1));
+    });
+    switchNextSection = function(){
+      var ref$, _, ref1$, nextPath;
+      ref$ = breakList((function(it){
+        return it === currentPath;
+      }))(
+      allPaths), _ = ref$[0], ref1$ = ref$[1], _ = ref1$[0], nextPath = ref1$[1];
+      if (!!nextPath) {
+        return switchSection(nextPath);
+      }
+      return [{
+        msg: "Out of bounds",
+        className: "jquery-console-message-error"
+      }];
+    };
+    switchPrevSection = function(){
+      var ref$, ref1$, prevPath, _;
+      ref$ = breakList((function(it){
+        return it === currentPath;
+      }))(
+      allPaths), ref1$ = ref$[0], prevPath = ref1$[ref1$.length - 1], _ = ref$[1];
+      if (!!prevPath) {
+        return switchSection(prevPath);
+      }
+      return [{
+        msg: "Out of bounds",
+        className: "jquery-console-message-error"
+      }];
+    };
+    $pres = $('pre').each(function(){
+      var $pre, lines, ws, ref$;
+      $pre = $(this);
+      lines = $pre.text().split('\n');
+      ws = (ref$ = /^\s+/.exec(lines[0])) != null ? ref$[0] : void 8;
+      if (!!ws) {
+        lines = lines.map(function(it){
+          return it.replace(ws, '');
+        });
+        return $pre.text(lines.join('\n').trim());
+      }
+    });
+    return switchSection(window.location.hash.substr(1) || 'welcome');
   });
 }).call(this);

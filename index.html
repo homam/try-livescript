@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<title>Try LiveScript</title>
 		<link rel="stylesheet" type="text/css" href="try-livescript.css">
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     	<script type="text/javascript" src="libs/jquery.console.js"></script>
@@ -12,69 +13,368 @@
 
 		</div>
 		<div id="lessons">
-			<section id="welcome">
-				<section id="fancy">
+			<section x-path="welcome">
+				<section x-path="wlecome/fancy">
+					<meta name='x-pre' value='{fold, all, sqrt, filter, sum} = require \prelude-ls'>
+					<h3>LiveScript</h3>
 					<p>
 						Try typing these out and see what happens (click to insert):
-						<code class='prompt' x-pre='{fold} = require \prelude-ls'>fold (+), 0, [1 to 100]</code>
-<pre class='prompt' x-pre='{all, sqrt, filter, sum} = require \prelude-ls'>
-is-prime = (x) -> 
-	x > 1 and all (x %), [2 to sqrt x]
-do -> [1 to 100] |> sum . filter is-prime
-</pre>
-<pre class='prompt' x-no-history x-pre='{all, sqrt, filter, sum} = require \prelude-ls'>
-html <- $.get window.location.href .then
-alert "This page has #{$ html .text!.split '' .length} characters!"
-</pre>
+						<code class='prompt'>fold (+), 0, [1 to 100]</code>
+						<pre class='prompt'>
+						is-prime = (x) -> 
+							x > 1 and all (x %), [2 to sqrt x]
+						do -> [1 to 100] |> sum . filter is-prime
+						</pre>
+						<pre class='prompt' x-no-history>
+						html &lt;- $.get window.location.href .then
+						alert "This page has #{$ html .text!.split '' .length} characters!"
+						</pre>
 					</p>
 					<p>
 						LiveScript is a language that compiles to JavaScript. LiveScript has many features that assist in functional programming. Comparing to JavaScript or CoffeeScript, LiveScript syntax is noise-less and more flexible.
 					</p>
+					<p>
+						Type <code class='prompt'>next!</code> to go to the next step.
+					</p>
+				</section>
+				<section x-path="welcome/expressions">
+					<h3>Expressions</h3>
+					<p>
+						Almost everything in LiveScript is an expression:
+					</p>
+					<p>
+						<code class="prompt">2 * (10 + 27 / 3)</code>
+					</p>
+					<p>
+						<code class="prompt">if 2 * 2 == 4 then "two times two is four" else "impossible"</code>
+					</p>
+					<p>
+						<code class="prompt">true and false</code>
+					</p>
+					<p>
+						String interpolation works with any expression.
+					</p>
+					<p>
+						<pre class="prompt">
+						"This window's width is: #outer-width
+						 and this document's title is: #{document.querySelector("title").textContent}"
+						 </pre>
+						 The language supports multi-line strings.
+					</p>
+					<p>
+						Type <code class='prompt' x-no-history>next!</code> to go to the next step. or
+						<code class='prompt' x-no-history>back!</code> to go to the previous step.
+					</p>
+				</section>
+				<section x-path="welcome/variables">
+					<h3>Variables</h3>
+					<p>
+						We define a variable by <code class='promot'>x = 42</code>
+						JavaScript <code>var</code> is not needed.
+					</p>
+					<p>
+						You can use dashes in the name of your variables and functions:
+						<code class='prompt'>planet-name = 'Saturn'</code>. This is equivalent and will be compiled to 
+						<code>planetName = 'Saturn';</code>
+					</p>
+				</section>
+				<section x-path="welcome/functions">
+					<h3>Functions</h3>
+					<p>
+						Defining functions is very lightweight: 
+						<code class='prompt'>add = (x, y) -> x + y</code>
+					</p>
+					<p>
+						We don't need paranthesis for invoking functions: 
+						<code class='prompt'>add 5, 18</code>
+					</p>
+					<p>
+						You can also call functions infix using backticks <code>`</code>:
+						<code class='prompt'>5 `add` 18</code> 
+					</p>
+					<p>
+						Some examples of functions:
+					</p>
+					<p>
+						<code class="prompt">double = (x) -> x * 2</code>
+					</p>
+					<p>
+						<code class="prompt">double-small-number = (x) -> if x &lt; 100 then x * 2 else x</code>
+					</p>
+					<p>
+						<code class="prompt">hello = (name) -> "Hello #name"</code>
+					</p>
+					<p>
+						The result of the last expression inside a function body will be returned as its output. You can use <code>return</code> to force returns earlier:
+						<pre class="prompt">
+						fact = (n) ->
+							return undefined if n &lt; 1
+							return 1 if n == 1
+							n * fact n - 1
+						</pre>
+					</p>
+				</section>
+				<section x-path="welcome/lists">
+					<h3>Lists</h3>
+					<p>
+						You can use list comprehension to produce new lists:
+						<code class='prompt'>[1 to 10]</code> or
+						<code class='prompt'>[i * 2 for i in [1 to 10]]</code>
+					</p>
+					<p>
+						Filtering: <code class='prompt' x-pre='{odd} = require \prelude-ls'>[i if odd i for i in [1 to 10]]</code>
+					</p>
+					<p>
+						Nested comprehensions produce a flat list:
+						<code class='prompt'>[i * j for i in [1 to 10] for j in [-10 to -1]]</code>
+					</p>
+					<p>
+						For example here is the list of all Pythagorian triples that are less than 10:
+						<pre class='prompt'>
+						[[a, b, c] for a in [1 to 10] 
+							for b in [1 to 10] 
+							for c in [1 to 10]
+							when a*a + b*b == c*c 
+						]
+						</pre>
+					</p>
 				</section>
 			</section>
-			<section id="assignments">
-				<section id="assigments-basics">
-				<p>
-					We define a variable by <code class='promot'>x = 42</code>
-					JavaScript <code>var</code> is not needed.
-				</p>
-				<p>
-					You can use dashes in the name of your variables and functions:
-					<code class='prompt'>planet-name = 'Saturn'</code>. This is equivalent and will be compiled to 
-					<code>planetName = 'Saturn';</code>
-				</p>
-				<p>
-					Here's a simple object literal:
-<pre class='prompt'>
-saturn = 
-	name: 'saturn'
-	mass: 568
-	orbital-period: 29
-</pre>
-				</p>
-				</section>
-				<section id="assignments-tuples">
+			<section x-path="pattern-matching">
+				<section x-path="pattern-matching/tuples">
+					<h3>Pattern Matching</h3>
 					<p>
-						This is a tuple: <code class='promot'>color = ['black', '#000000']</code>
+						This is a tuple: <code class='prompt'>color = ['white', 0xffffff]</code>
 					</p>
 					<p>
 						You can use pattern matching to extract values from a tuple, list or an object.
+						<pre class='prompt' x-no-history>
+						[name, hex] = color
+						"Hexadecimal value for color #name is: 0x#{hex.to-string 16}"
+						</pre>
+					</p>
+					<p>
+						This is a list: <code class='prompt'>list = ['A', 'B', 'C', 'D', 'E', 'F']</code>
+					</p>
+					<p>
+						You can use pattern matching on the lists:
+						<code class='prompt'>[head, ...rest] = ['A', 'B', 'C', 'D', 'E', 'F']</code>
+					</p>
+				</section>
+				<section x-path="pattern-matching/lists">
+					<meta name="x-pre" value="{empty} = require \prelude-ls">
+					<h3>Pattern Matching in Lists</h3>
+					<p>
+						Two lists can be concatinated using <code>++</code> operator (<code class="prompt">one-to-ten = [1,2,3,4,5] ++ [6,7,8,8,10]</code>).
+						<pre class="prompt">
+							[head, ...rest] = ['A', 'B', 'C', 'D', 'E', 'F']
+							[head] ++ rest
+						</pre>
+						<code class="prompt">[head] ++ rest</code> is the original list.
+					</p>
+					<p>
+						Using everything we know so far and a little bit of recursion we can implement the all famous quicksort function:
+						<pre class="prompt">
+						quicksort = ([x, ...xs]:list) ->
+						    return [] if empty list
+						    smaller-sorted = quicksort [a for a in xs when a &lt;= x]  
+						    bigger-sorted  = quicksort [a for a in xs when a > x]  
+						    smaller-sorted ++ [x] ++ bigger-sorted  
+						</pre>
+						Give it a try: <code class="prompt">quicksort [7,91,22,5,2,1,83]</code>
+					</p>
+				</section>
+				<section x-path="pattern-matching/objects">
+					<p>
+						Here's a simple object literal:
+						<pre class='prompt'>
+						saturn = 
+							name: 'saturn'
+							mass: 568
+							orbital-period: 29
+							distance-from-sum: 
+								min: 9.05
+								max: 10.12
+						</pre>
+						Pattern matching also works on objets:
+						<pre class="prompt" x-pre="
+						saturn = 
+							name: 'saturn'
+							mass: 568
+							orbital-period: 29
+							distance-from-sun: 
+								min: 9.05
+								max: 10.12">
+						{distance-from-sun: {min, max}} = saturn
+						"Perihelion: #min AU, Aphelion: #max AU"
+						</pre>
 					</p>
 				</section>
 			</section>
-			<section id="functions">
-				<p>
-					Defining functions is very lightweight in LiveScript: 
-					<code class='prompt'>add = (x, y) -> x + y</code>
-				</p>
-				<p>
-					We don't need paranthesis for invoking functions: 
-					<code class='prompt'>add 5, 18</code>
-				</p>
-				<p>
-					You can also call functions infix using backticks <code>`</code>:
-					<code class='prompt'>5 `add` 18</code> 
-				</p>
+			<section x-path="functions">
+				<section x-path="functions/currying">
+					<h3>Currying</h3>
+					<p>
+						A curried function can be called with less arguments that defined with, and then it will return a partially applied function.
+						This means that it returns a function whose arguments are those which you didn't supply.
+					</p>
+					<p>
+						Curried functions are defined by long arrows <code>--></code>, for example:
+						<code class="prompt">add = (x, y) --> x + y</code>, now 
+						<code class="prompt">add5 = add 5</code> is a function that takes a number and adds 5 to it: <code class="prompt">add5 20</code>
+					</p>
+					<p>
+						Binary operators can also be curried:
+						<code class="prompt">ten-times = (10 *)</code>
+					</p>
+					<p>
+						If the function takes only one parameter, you can ignore the parameter in arguments list and use the special keyword <code>it</code> to refernece the parameter in the body of the function:
+						<code class='prompt'>square = -> it * it</code>
+					</p>
+				</section>
+				<section x-path="functions/currying-advanced">
+					<meta name="x-pre" value='pi = Math.PI' />
+					<meta name="x-pre" value='{map} = require \prelude-ls' />
+					<h3>Why currying?</h3>
+					<p>
+						We can round a decimal number to different precisions.
+						<pre class="prompt">
+							round = (precision, i) --> 
+								((i * 10**precision) - (i * 10**precision) % 1) / (10**precision) 
+						</pre>
+						<code>round</code> takes two arguments: precision (that is the number of digits after decimal point) and the actual input that's the number that needs to be rounded.
+					</p>
+					<p>
+						Now we can easily create different versions of the round function:
+					</p>
+					<p>
+						<code class="prompt">round0 = round 0</code> that returns a whole number.
+					</p>
+					<p>
+						<code class="prompt">round1 = round 1</code> that rounds with one decimal point; etc.
+					</p>
+					<p>
+						Now take a look at this example that returns a list of numbers that are &pi; rounded with different precisions:
+						<pre class="prompt">[0 to 6].map(-> round it).map(-> it pi)</pre>
+						OK what's going on here? Let's break this expression down to understand it:
+					</p>
+					<p>
+						<code class="prompt">[0 to 6]</code> creates a list of numbers from 0 to 6.
+					</p>
+					<p>
+						<code class="prompt">[0 to 6].map(-> round it)</code> creates a list of curried round functions. Each item in this list is the round function with a different precision. For example <code>[0 to 6].map(-> round it)[2] == round 2</code>
+					</p>
+					<p>
+						<code>map(-> it pi)</code> applies every curried round functions to &pi;.
+					</p>
+					<p>
+						Note that in each step <code>it</code> refers to one element of the list that was produced in the previous step. <code>it</code> in <code>[0 to 6].map(-> round it)</code> is a number (0 to 6) and <code>it</code> in <code>map(-> it pi)</code> is a curried function.
+					</p>
+					<p>
+						Once we get used to LiveScript and its standard library (prelude.ls), we will know that we can omit these <code>it</code>s if use the curried form of <code>map</code> from prelude.ls:
+						<pre class="prompt">[0 to 6] |> map round |> map (&lt;| pi)</pre>
+					</p>
+				</section>
+				<section x-path="functions/invocation">
+					<h3>Function Invocation</h3>
+					<p>
+						Here's a function that takes no argument and always returns 5: <code class="prompt">five = -> 5</code>. Invoke this function by: <code class="prompt">five!</code>
+					</p>
+					<p>
+						Use <code>do</code> to invoke an anonymous closure automatically:
+						<pre class="prompt" x-no-history>
+						do ->
+							area = screen.width * screen.height
+							alert "Your screen area is #area pixels"
+						</pre>
+						Note the scope of <code class="prompt">area</code> variable: it is not accesible outside the anonynous closure.
+					</p>
+					<p>
+						A colsure that remembers the number of times that it was invoked:
+						<pre class="prompt">
+						say-hello = do ->
+							i = 0
+							(greetings) ->
+								i := i + 1
+								"#i - Hello #{greetings}"
+						</pre>
+						We are using <code>:=</code> to modify a variable that is defined in the outer scope.
+					</p>
+
+				</section>
+				<section x-path="functions/composition">
+					<meta name="x-pre" value="[f, g] = [(3 *), (10 +)]">
+					<meta name="x-pre" value="length = (s) -> s.length">
+					<meta name="x-pre" value="odd = (i) -> i % 2 == 1">
+					<h3>Function Composition</h3>
+					<p>
+						Composing allows you to create new functions by composing them out of a series of functions. If <code>f</code> and <code>g</code> are two functions then 
+						<code>f . g</code> or <code>f &lt;&lt; g</code> is equivalent to <code>f(g(x))</code> and <code>f &gt;&gt; g</code> is equivalent to <code>g(f(x))</code>
+					</p>
+					<p>
+						For example, given: <code class="prompt">f = (3 *)</code> and <code class="prompt">g = (10 +)</code>
+					</p>
+					<p>
+						<code x-no-history class="prompt">(f &lt;&lt; g) 5</code>
+						is equivalent to 
+						<code class="prompt">f(g(5))</code> or
+						<code>(3 *)(10 + 5) = (3 *) 15 = 45</code>
+					</p>
+					<p>
+						<code x-no-history class="prompt">(f &gt;&gt; g) 5</code>
+						is equivalent to
+						<code class="prompt">g(f(5))</code> or
+						<code>(10 +)(3 * 5) = (10 +) 15 = 25</code>
+					</p>
+					<p>
+						For an example take length function: 
+						<code class="prompt">length = (s) -> s.length</code>; it retunrs the length of a its input string.
+						We  canwrite its type with this notation:
+						<pre>length :: String -> Number</pre>
+					</p>
+					<p>
+						And odd function that returns true if its input is an odd number:
+						<code class="prompt">odd = (i) -> i % 2 == 1</code>; it's type is:
+						<pre>odd :: Number -> Boolean</pre>
+					</p>
+					<p>
+						Now the type of <code class="prompt">is-length-odd = (length >> odd)</code> is:
+						<pre>is-length-odd :: String -> Boolean</pre>
+					</p>
+					<p>
+						Generally:
+						<pre>
+						f        :: a -> b
+						g        :: b -> c
+						(f >> g) :: a -> c
+						</pre>
+					</p>
+				</section>
+				<section x-path="functions/piping">
+					<meta name="x-pre" value="{sum, odd, filter, map, sqrt} = require \prelude-ls">
+					<h3>Piping</h3>
+					<p>
+						We grew up learning that the arguments of a function is its right side: <code>sin pi</code>; but it does not have to be:
+						We can pipe the argument to a function by <code>|&gt;</code>:
+						<pre class="prompt">[1 to 10] |> sum</pre>
+					</p>
+					<p>
+						<code>&lt;|</code> evaluates its right side and pipes the result to the function at its left:
+						<pre class="prompt" x-no-history>sum &lt;| map sqrt, [1 to 10]</pre>
+					</p>
+					<p>
+						For example, here's a way for generating a list of 10 random integers between 0 and 100:
+						<pre class="prompt">[1 to 10] |> map (-> Math.round &lt;| Math.random! * 100)</pre>
+					</p>
+				</section>
+			</section>
+			<section x-path="if">
+				<section x-path="ifthenelse">
+					<p>
+						If then else is an expression:
+						<code class='prompt'>if window.outer-width > 1200 then 'Nice screen!' else 'Small is beautiful'</code>
+					</p>
+				</section>
 			</section>
 		</div>
 	</body>

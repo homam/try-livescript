@@ -20,5 +20,6 @@ Icon?
 Thumbs.db
 *.ls
 *.styl
+temp/
 build.sh
 package.json
