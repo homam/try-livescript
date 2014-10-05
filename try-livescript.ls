@@ -76,6 +76,8 @@ window.lsc-console = lsc.console do
 			}
 		]
 	complete-handle: (line) ->
+		line = (/[^a-zA-Z]?(\w.*)/i.exec line)?.1
+		return "" if not line
 		autocomplete-list = <[next! back!]> ++ autocomplete-history
 		autocomplete-list.filter(-> (it.last-index-of line) == 0).map(-> it.substring line.length)
 	autofocus: true

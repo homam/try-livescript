@@ -7,5 +7,5 @@ cp try-livescript.js temp/
 git checkout gh-pages
 cp -f temp/*.* .
 
-git add .
-git commit
+# git add .
+# git commit

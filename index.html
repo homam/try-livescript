@@ -157,7 +157,7 @@
 					</p>
 					<p>
 						You can use pattern matching to extract values from a tuple, list or an object.
-						<pre class='prompt' x-no-history>
+						<pre class='prompt'>
 						[name, hex] = color
 						"Hexadecimal value for color #name is: 0x#{hex.to-string 16}"
 						</pre>
@@ -188,7 +188,7 @@
 						Using everything we know so far and a little bit of recursion we can implement the all famous quicksort function:
 						<pre class="prompt">
 						quicksort = ([x, ...xs]:list) ->
-						    return [] if empty list
+						    return [] if list.length == 0
 						    smaller-sorted = quicksort [a for a in xs when a &lt;= x]  
 						    bigger-sorted  = quicksort [a for a in xs when a > x]  
 						    smaller-sorted ++ [x] ++ bigger-sorted  
@@ -231,7 +231,7 @@
 							{pi, sin} = require 'prelude-ls'
 							sin pi/2
 						</pre>
-						prelude.ls is LiveScript standard library, we are exploring it a little bit later.
+						prelude.ls is LiveScript standard library, we are goting to explore it a little bit later.
 					</p>
 				</section>
 			</section>
@@ -298,7 +298,7 @@
 						<code>map(-> it pi)</code> applies every curried round functions to &pi;.
 					</p>
 					<p>
-						Note that in each step <code>it</code> refers to one element of the list that was produced in the previous step. <code>it</code> in <code>[0 to 6].map(-> round it)</code> is a number (0 to 6) and <code>it</code> in <code>map(-> it pi)</code> is a curried function.
+						Note that in each step <code>it</code> refers to one element of the list that was produced in the previous step. <code>it</code> in <code>[0 to 6].map(-> round it)</code> is a number (0 to 6) and <code>it</code> in <code>map(-> it pi)</code> is a function.
 					</p>
 					<p>
 						Once we get used to LiveScript and its standard library (prelude.ls), we will omit these <code>it</code>s using the curried form of <code>map</code> from prelude.ls:
@@ -358,7 +358,7 @@
 					</p>
 					<p>
 						For an example take the length function: 
-						<code class="prompt">length = (s) -> s.length</code> that returns the length of a its input string. We can write its type with this notation:
+						<code class="prompt">length = (s) -> s.length</code> that returns the length of its input string. We can write its type with this notation:
 						<pre>length :: String -> Number</pre>
 					</p>
 					<p>
@@ -385,8 +385,8 @@
 					<h3>Piping</h3>
 					<p>
 						We grew up learning that the arguments of a function are palced at its right side: <code>Sin(&theta;)</code>; but in LiveScript
-						we can pipe the argument to a function by <code>|&gt;</code> from its left side:
-						<pre class="prompt">[1 to 10] |> sum</pre>
+						we can pipe an argument to a function by <code>|&gt;</code> from its left side:
+						<pre x-no-linefeed class="prompt">[1 to 10] |> sum</pre>
 					</p>
 					<p>
 						<code>&lt;|</code> evaluates its right side and pipes the result to the function at its left:
@@ -417,7 +417,7 @@
 						<pre x-no-linefeed class="prompt">html &lt;- $.get window.location.href ; alert html.length</pre>
 					</p>
 					<p>
-						Using backcalls is a way for avoiding ballback hell in 
+						Using backcalls is a way for avoiding callback hell in 
 						serial asynchronous sequences:
 						<pre class="prompt" x-no-history>
 						html &lt;- $.get window.location.href
@@ -440,7 +440,8 @@
 						Here we are doubling each integer between 1 and 10 and then filtering the result for numbers that are greater than 10.
 					</p>
 					<p>
-						<code>concat-map</code> produces a flattened list; in the snippet below produces a list of lists using map:
+						<code>concat-map</code> produces a flattened list; 
+						The below snippet produces a list of lists using map:
 						<pre x-no-linefeed class="prompt">[1 to 5] |> map (i) -> [1 to i]</pre>
 						But it will produce a list of just numbers using concat-map:
 						<pre x-no-linefeed class="prompt">[1 to 5] |> concat-map (i) -> [1 to i]</pre>
@@ -461,16 +462,16 @@
 						<pre x-no-linefeed class="prompt">
 						alphabet `zip` [1 to 26] |> (filter ([_, i]) -> even i) |> (map ([a, _]) -> a)
 						</pre>
-						You might go even fancier and use a shorter expression that does the same job:
+						You might go fancier and use a shorter expression that does the same job:
 						<pre x-no-linefeed class="prompt">
-						alphabet `zip` [1 to 26] |> filter even . (.1) |> map (.0) 
+						alphabet `zip` [1 to 26] |> filter (.1) >> even |> map (.0) 
 						</pre>
-						<code class="prompt">even . (.1)</code> is a function composition. 
+						<code class="prompt">(.1) >> even</code> is a function composition. 
 						<code class="prompt">(.1)</code> is a function that returns the second element of its input tuple (or array): <code class="prompt">(.1) [1, 2, 3]</code>
 					</p>
 					<p>
-						Remember that <code class="prompt">alphabet `zip` [1 to 26]</code> is a list of tuples like <code>[['A', 1], ['B', 2], ...]</code>. <code>filter even . (.1)</code> applies <code>even . (.1)</code> function on every element of this array, for example: 
-						<code class="prompt">even . (.1) &lt;| ['B', 2]</code>
+						Remember that <code class="prompt">alphabet `zip` [1 to 26]</code> is a list of tuples like <code>[['A', 1], ['B', 2], ...]</code>. <code>filter (.1) >> even</code> applies <code class="prompt">(.1) >> even</code> function on every element of this list. <code class="prompt">(.1) >> even</code> takes a tuple in its input, extracts its second element, and checks if it's even: for example: 
+						<code class="prompt">(.1) >> even &lt;| ['B', 2]</code>
 					</p>
 				</section>
 				<section x-path="prelude.ls/fold">
