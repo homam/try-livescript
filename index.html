@@ -267,42 +267,42 @@
 					<meta name="x-pre" value='{map} = require \prelude-ls' />
 					<h3>Why currying?</h3>
 					<p>
-						We can round a decimal number to different precisions.
+						We can truncate a decimal number to different precisions.
 						<pre x-no-linefeed class="prompt">
-							round = (precision, i) --> 
+							truncate = (precision, i) --> 
 								((i * 10**precision) - (i * 10**precision) % 1) / (10**precision) 
 						</pre>
-						<code>round</code> takes two arguments: precision (that is the number of digits after decimal point) and the actual input that's the number that needs to be rounded: <code class="prompt">round 2, pi</code>
+						<code>truncate</code> takes two arguments: precision (that is the number of digits after decimal point) and the actual input that's the number that needs to be truncateed: <code class="prompt">truncate 2, pi</code>
 					</p>
 					<p>
-						Now we can easily create different versions of the round function:
+						Now we can easily create different versions of the truncate function:
 					</p>
 					<p>
-						<code class="prompt">round0 = round 0</code> that returns a whole number.
+						<code class="prompt">truncate0 = truncate 0</code> that returns a whole number.
 					</p>
 					<p>
-						<code class="prompt">round1 = round 1</code> that rounds with one decimal point; etc.
+						<code class="prompt">truncate1 = truncate 1</code> that truncates with one decimal point; etc.
 					</p>
 					<p>
-						Now take a look at this example that returns a list of numbers that are &pi; rounded with different precisions:
-						<pre x-no-linefeed class="prompt">[0 to 6].map(-> round it).map(-> it pi)</pre>
+						Now take a look at this example that returns a list of numbers that are &pi; truncateed with different precisions:
+						<pre x-no-linefeed class="prompt">[0 to 6].map(-> truncate it).map(-> it pi)</pre>
 						OK what's going on here? Let's break this expression down to understand it:
 					</p>
 					<p>
 						<code class="prompt">[0 to 6]</code> creates a list of numbers from 0 to 6.
 					</p>
 					<p>
-						<code class="prompt">[0 to 6].map(-> round it)</code> creates a list of curried round functions. Each item in this list is the round function with a different precision. For example <code>[0 to 6].map(-> round it)[2] == round 2</code>
+						<code class="prompt">[0 to 6].map(-> truncate it)</code> creates a list of curried truncate functions. Each item in this list is the truncate function with a different precision. For example <code>[0 to 6].map(-> truncate it)[2] == truncate 2</code>
 					</p>
 					<p>
-						<code>map(-> it pi)</code> applies every curried round functions to &pi;.
+						<code>map(-> it pi)</code> applies every curried truncate functions to &pi;.
 					</p>
 					<p>
-						Note that in each step <code>it</code> refers to one element of the list that was produced in the previous step. <code>it</code> in <code>[0 to 6].map(-> round it)</code> is a number (0 to 6) and <code>it</code> in <code>map(-> it pi)</code> is a function.
+						Note that in each step <code>it</code> refers to one element of the list that was produced in the previous step. <code>it</code> in <code>[0 to 6].map(-> truncate it)</code> is a number (0 to 6) and <code>it</code> in <code>map(-> it pi)</code> is a function.
 					</p>
 					<p>
 						Once we get used to LiveScript and its standard library (prelude.ls), we will omit these <code>it</code>s using the curried form of <code>map</code> from prelude.ls:
-						<pre x-no-linefeed class="prompt">[0 to 6] |> map round |> map (&lt;| pi)</pre>
+						<pre x-no-linefeed class="prompt">[0 to 6] |> map truncate |> map (&lt;| pi)</pre>
 					</p>
 				</section>
 				<section x-path="functions/invocation">
@@ -363,7 +363,7 @@
 					</p>
 					<p>
 						And odd function that returns true if its input is an odd number:
-						<code class="prompt">odd = (i) -> i % 2 == 1</code>; it's type is:
+						<code class="prompt">odd = (i) -> i % 2 == 1</code>; its type is:
 						<pre>odd :: Number -> Boolean</pre>
 					</p>
 					<p>
