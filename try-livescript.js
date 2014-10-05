@@ -99,7 +99,11 @@
         }
       },
       completeHandle: function(line){
-        var autocompleteList;
+        var ref$, autocompleteList;
+        line = (ref$ = /[^a-zA-Z]?(\w.*)/i.exec(line)) != null ? ref$[1] : void 8;
+        if (!line) {
+          return "";
+        }
         autocompleteList = ['next!', 'back!'].concat(autocompleteHistory);
         return autocompleteList.filter(function(it){
           return it.lastIndexOf(line) === 0;
