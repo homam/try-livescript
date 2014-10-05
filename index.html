@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<title>Try LiveScript</title>
+		<meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 		<link rel="stylesheet" type="text/css" href="try-livescript.css">
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     	<script type="text/javascript" src="libs/jquery.console.js"></script>
@@ -16,7 +17,7 @@
 			<section x-path="welcome">
 				<section x-path="wlecome/fancy">
 					<meta name='x-pre' value='{fold, all, sqrt, filter, sum} = require \prelude-ls'>
-					<h3>LiveScript</h3>
+					<h3>Got 15 mins to try LiveScript?</h3>
 					<p>
 						Try typing these out and see what happens (click to insert):
 						<code class='prompt'>fold (+), 0, [1 to 100]</code>
@@ -26,16 +27,20 @@
 						do -> [1 to 100] |> sum . filter is-prime
 						</pre>
 						<pre class='prompt' x-no-history>
-						html &lt;- $.get window.location.href .then
+						html &lt;- $.get window.location.href
 						alert "This page has #{$ html .text!.split '' .length} characters!"
 						</pre>
 					</p>
 					<p>
-						LiveScript is a language that compiles to JavaScript. LiveScript has many features that assist in functional programming. Comparing to JavaScript or CoffeeScript, LiveScript syntax is noise-less and more flexible.
+						LiveScript is a language that compiles to JavaScript. It has many features that assist in functional programming. Comparing to JavaScript or CoffeeScript, LiveScript syntax is noise-less and more flexible.
 					</p>
 					<p>
 						Type <code class='prompt'>next!</code> to go to the next step.
 					</p>
+					<footer>
+						Console is powered by 
+						<a href="http://github.com/chrisdone/jquery-console">jquery-console</a>.
+					</footer>
 				</section>
 				<section x-path="welcome/expressions">
 					<h3>Expressions</h3>
@@ -55,9 +60,9 @@
 						String interpolation works with any expression.
 					</p>
 					<p>
-						<pre class="prompt">
-						"This window's width is: #outer-width
-						 and this document's title is: #{document.querySelector("title").textContent}"
+						<pre class="prompt" x-no-linefeed>
+						"This window's width is: #outer-width 
+						 and this document's title is: #{document.query-selector "title" .text-content}"
 						 </pre>
 						 The language supports multi-line strings.
 					</p>
@@ -69,7 +74,7 @@
 				<section x-path="welcome/variables">
 					<h3>Variables</h3>
 					<p>
-						We define a variable by <code class='promot'>x = 42</code>
+						We define a variable by <code class='prompt'>x = 42</code>
 						JavaScript <code>var</code> is not needed.
 					</p>
 					<p>
@@ -89,11 +94,11 @@
 						<code class='prompt'>add 5, 18</code>
 					</p>
 					<p>
-						You can also call functions infix using backticks <code>`</code>:
+						You can also call functions infix using backticks:
 						<code class='prompt'>5 `add` 18</code> 
 					</p>
 					<p>
-						Some examples of functions:
+						Some examples:
 					</p>
 					<p>
 						<code class="prompt">double = (x) -> x * 2</code>
@@ -115,6 +120,7 @@
 					</p>
 				</section>
 				<section x-path="welcome/lists">
+					<meta name="x-pre" value="{odd, even} = require \prelude-ls">
 					<h3>Lists</h3>
 					<p>
 						You can use list comprehension to produce new lists:
@@ -122,7 +128,7 @@
 						<code class='prompt'>[i * 2 for i in [1 to 10]]</code>
 					</p>
 					<p>
-						Filtering: <code class='prompt' x-pre='{odd} = require \prelude-ls'>[i if odd i for i in [1 to 10]]</code>
+						Filtering: <code class='prompt'>[i if odd i for i in [1 to 10]]</code>
 					</p>
 					<p>
 						Nested comprehensions produce a flat list:
@@ -138,6 +144,9 @@
 						]
 						</pre>
 					</p>
+					<footer>
+						Pythagorian triples: <a class='info' href="http://www.mathsisfun.com/pythagorean_triples.html">http://www.mathsisfun.com/pythagorean_triples.html</a>
+					</footer>
 				</section>
 			</section>
 			<section x-path="pattern-matching">
@@ -163,14 +172,17 @@
 				</section>
 				<section x-path="pattern-matching/lists">
 					<meta name="x-pre" value="{empty} = require \prelude-ls">
-					<h3>Pattern Matching in Lists</h3>
+					<h3>Destructuring Lists</h3>
 					<p>
-						Two lists can be concatinated using <code>++</code> operator (<code class="prompt">one-to-ten = [1,2,3,4,5] ++ [6,7,8,8,10]</code>).
+						Two lists can be concatenated using <code>++</code> operator (<code class="prompt">one-to-ten = [1,2,3,4,5] ++ [6,7,8,8,10]</code>).
 						<pre class="prompt">
 							[head, ...rest] = ['A', 'B', 'C', 'D', 'E', 'F']
 							[head] ++ rest
 						</pre>
 						<code class="prompt">[head] ++ rest</code> is the original list.
+					</p>
+					<p>
+						Pattern matching is especially useful for self documenting the code.
 					</p>
 					<p>
 						Using everything we know so far and a little bit of recursion we can implement the all famous quicksort function:
@@ -181,10 +193,14 @@
 						    bigger-sorted  = quicksort [a for a in xs when a > x]  
 						    smaller-sorted ++ [x] ++ bigger-sorted  
 						</pre>
-						Give it a try: <code class="prompt">quicksort [7,91,22,5,2,1,83]</code>
+						Try it out: <code class="prompt">quicksort [7, 91, 22, 5, 2, 1, 83]</code>
 					</p>
+					<footer>
+						Quicksort from: <a class="info" href="http://learnyouahaskell.com/recursion#quick-sort">http://learnyouahaskell.com/recursion</a>
+					</footer>
 				</section>
 				<section x-path="pattern-matching/objects">
+					<h3>Objects</h3>
 					<p>
 						Here's a simple object literal:
 						<pre class='prompt'>
@@ -197,7 +213,7 @@
 								max: 10.12
 						</pre>
 						Pattern matching also works on objets:
-						<pre class="prompt" x-pre="
+						<pre x-no-linefeed class="prompt" x-pre="
 						saturn = 
 							name: 'saturn'
 							mass: 568
@@ -208,6 +224,14 @@
 						{distance-from-sun: {min, max}} = saturn
 						"Perihelion: #min AU, Aphelion: #max AU"
 						</pre>
+					</p>
+					<p>
+						You can use pattern matching to import certain properties from a node module:
+						<pre x-no-linefeed class="prompt">
+							{pi, sin} = require 'prelude-ls'
+							sin pi/2
+						</pre>
+						prelude.ls is LiveScript standard library, we are exploring it a little bit later.
 					</p>
 				</section>
 			</section>
@@ -224,13 +248,19 @@
 						<code class="prompt">add5 = add 5</code> is a function that takes a number and adds 5 to it: <code class="prompt">add5 20</code>
 					</p>
 					<p>
-						Binary operators can also be curried:
+						Binary infix operators can also be partially applied:
 						<code class="prompt">ten-times = (10 *)</code>
+					</p>
+					<p>
+						<code class="prompt">devide-by-ten = (/ 10)</code>
 					</p>
 					<p>
 						If the function takes only one parameter, you can ignore the parameter in arguments list and use the special keyword <code>it</code> to refernece the parameter in the body of the function:
 						<code class='prompt'>square = -> it * it</code>
 					</p>
+					<footer>
+						Currying is named after 20th century mathematician <a href="http://en.wikipedia.org/wiki/Haskell_Curry" class="info">Haskell Curry</a>.
+					</footer>
 				</section>
 				<section x-path="functions/currying-advanced">
 					<meta name="x-pre" value='pi = Math.PI' />
@@ -238,11 +268,11 @@
 					<h3>Why currying?</h3>
 					<p>
 						We can round a decimal number to different precisions.
-						<pre class="prompt">
+						<pre x-no-linefeed class="prompt">
 							round = (precision, i) --> 
 								((i * 10**precision) - (i * 10**precision) % 1) / (10**precision) 
 						</pre>
-						<code>round</code> takes two arguments: precision (that is the number of digits after decimal point) and the actual input that's the number that needs to be rounded.
+						<code>round</code> takes two arguments: precision (that is the number of digits after decimal point) and the actual input that's the number that needs to be rounded: <code class="prompt">round 2, pi</code>
 					</p>
 					<p>
 						Now we can easily create different versions of the round function:
@@ -255,7 +285,7 @@
 					</p>
 					<p>
 						Now take a look at this example that returns a list of numbers that are &pi; rounded with different precisions:
-						<pre class="prompt">[0 to 6].map(-> round it).map(-> it pi)</pre>
+						<pre x-no-linefeed class="prompt">[0 to 6].map(-> round it).map(-> it pi)</pre>
 						OK what's going on here? Let's break this expression down to understand it:
 					</p>
 					<p>
@@ -271,8 +301,8 @@
 						Note that in each step <code>it</code> refers to one element of the list that was produced in the previous step. <code>it</code> in <code>[0 to 6].map(-> round it)</code> is a number (0 to 6) and <code>it</code> in <code>map(-> it pi)</code> is a curried function.
 					</p>
 					<p>
-						Once we get used to LiveScript and its standard library (prelude.ls), we will know that we can omit these <code>it</code>s if use the curried form of <code>map</code> from prelude.ls:
-						<pre class="prompt">[0 to 6] |> map round |> map (&lt;| pi)</pre>
+						Once we get used to LiveScript and its standard library (prelude.ls), we will omit these <code>it</code>s using the curried form of <code>map</code> from prelude.ls:
+						<pre x-no-linefeed class="prompt">[0 to 6] |> map round |> map (&lt;| pi)</pre>
 					</p>
 				</section>
 				<section x-path="functions/invocation">
@@ -290,7 +320,7 @@
 						Note the scope of <code class="prompt">area</code> variable: it is not accesible outside the anonynous closure.
 					</p>
 					<p>
-						A colsure that remembers the number of times that it was invoked:
+						This is a colsure that remembers the number of times that it was invoked:
 						<pre class="prompt">
 						say-hello = do ->
 							i = 0
@@ -298,7 +328,7 @@
 								i := i + 1
 								"#i - Hello #{greetings}"
 						</pre>
-						We are using <code>:=</code> to modify a variable that is defined in the outer scope.
+						We use <code>:=</code> to modify a variable that is defined in the outer scope.
 					</p>
 
 				</section>
@@ -327,9 +357,8 @@
 						<code>(10 +)(3 * 5) = (10 +) 15 = 25</code>
 					</p>
 					<p>
-						For an example take length function: 
-						<code class="prompt">length = (s) -> s.length</code>; it retunrs the length of a its input string.
-						We  canwrite its type with this notation:
+						For an example take the length function: 
+						<code class="prompt">length = (s) -> s.length</code> that returns the length of a its input string. We can write its type with this notation:
 						<pre>length :: String -> Number</pre>
 					</p>
 					<p>
@@ -340,6 +369,7 @@
 					<p>
 						Now the type of <code class="prompt">is-length-odd = (length >> odd)</code> is:
 						<pre>is-length-odd :: String -> Boolean</pre>
+						Its input is the input of the first function and its output is the output of the second function.
 					</p>
 					<p>
 						Generally:
@@ -354,28 +384,150 @@
 					<meta name="x-pre" value="{sum, odd, filter, map, sqrt} = require \prelude-ls">
 					<h3>Piping</h3>
 					<p>
-						We grew up learning that the arguments of a function is its right side: <code>sin pi</code>; but it does not have to be:
-						We can pipe the argument to a function by <code>|&gt;</code>:
+						We grew up learning that the arguments of a function are palced at its right side: <code>Sin(&theta;)</code>; but in LiveScript
+						we can pipe the argument to a function by <code>|&gt;</code> from its left side:
 						<pre class="prompt">[1 to 10] |> sum</pre>
 					</p>
 					<p>
 						<code>&lt;|</code> evaluates its right side and pipes the result to the function at its left:
-						<pre class="prompt" x-no-history>sum &lt;| map sqrt, [1 to 10]</pre>
+						<pre class="prompt" x-no-linefeed x-no-history>sum &lt;| map sqrt, [1 to 10]</pre>
 					</p>
 					<p>
-						For example, here's a way for generating a list of 10 random integers between 0 and 100:
-						<pre class="prompt">[1 to 10] |> map (-> Math.round &lt;| Math.random! * 100)</pre>
+						For example, the following snippet generates a list of 10 random integers between 0 and 100:
+						<pre class="prompt" x-no-linefeed>[1 to 10] |> map (-> Math.round &lt;| Math.random! * 100)</pre>
+					</p>
+					<p>
+						We pipe the list of numbers between 1 to 10 to map function.
+					</p>
+					<p>
+						map invokes the anonynous function <code>(-> Math.round &lt;| Math.random! * 100)</code> for each item in the list.
+					</p>
+					<p>
+						The function ignores its input (the number), produces a random floating point number between 0 and 100 (<code>Math.random! * 100</code>) and rounds it.
+					</p>
+				</section>
+				<section x-path="functions/callbacks">
+					<meta name='x-pre' value='{map} = require \prelude-ls'>
+					<h3>Backcalls</h3>
+					<p>
+						Backcalls allow you to unnest callbacks. They are defined using arrows pointed to the left.
+					</p>
+					<p>
+						The content length of this page:
+						<pre x-no-linefeed class="prompt">html &lt;- $.get window.location.href ; alert html.length</pre>
+					</p>
+					<p>
+						Using backcalls is a way for avoiding ballback hell in 
+						serial asynchronous sequences:
+						<pre class="prompt" x-no-history>
+						html &lt;- $.get window.location.href
+						$script = $ '&lt;html/&gt;' .html html .find "script[src*='libs/']:first"
+						content &lt;- $.get ($script .attr 'src')
+						alert "The content size of the first external script is #{content.length}"
+						</pre>
 					</p>
 				</section>
 			</section>
-			<section x-path="if">
-				<section x-path="ifthenelse">
+			<section x-path="prelude.ls">
+				<section x-path="prelude.ls/basics">
+					<meta name='x-pre' value='{map, filter, odd, even, fold, concat-map, zip} = require \prelude-ls'>
+					<h3>perlude.ls</h3>
 					<p>
-						If then else is an expression:
-						<code class='prompt'>if window.outer-width > 1200 then 'Nice screen!' else 'Small is beautiful'</code>
+						prelude.ls is the recommended base library for LiveScript.
+						It defines many utility functions for working with lists and objects.
+						We've already seen <code>map</code> and <code>filter</code>:
+						<pre x-no-linefeed class="prompt">[1 to 10] |> map (* 2) |> filter (> 10)</pre>
+						Here we are doubling each integer between 1 and 10 and then filtering the result for numbers that are greater than 10.
+					</p>
+					<p>
+						<code>concat-map</code> produces a flattened list; in the snippet below produces a list of lists using map:
+						<pre x-no-linefeed class="prompt">[1 to 5] |> map (i) -> [1 to i]</pre>
+						But it will produce a list of just numbers using concat-map:
+						<pre x-no-linefeed class="prompt">[1 to 5] |> concat-map (i) -> [1 to i]</pre>
+					</p>
+				</section>
+				<section x-path="prelude.ls/zip">
+					<meta name='x-pre' value='{map, filter, odd, even, fold, concat-map, zip} = require \prelude-ls'>
+					<h3>Zipping</h3>
+					<p>
+						<code>zip</code> zips two lists together! Producing a list of tuples:
+						<pre x-no-linefeed class="prompt">
+						alphabet = [65 to 90] |> map String.from-char-code
+						alphabet `zip` [1 to 26]
+						</pre>
+					</p>
+					<p>
+						You can pipe the output of the previous zip to a filter function to only select the even letters in the alphabet:
+						<pre x-no-linefeed class="prompt">
+						alphabet `zip` [1 to 26] |> (filter ([_, i]) -> even i) |> (map ([a, _]) -> a)
+						</pre>
+						You might go even fancier and use a shorter expression that does the same job:
+						<pre x-no-linefeed class="prompt">
+						alphabet `zip` [1 to 26] |> filter even . (.1) |> map (.0) 
+						</pre>
+						<code class="prompt">even . (.1)</code> is a function composition. 
+						<code class="prompt">(.1)</code> is a function that returns the second element of its input tuple (or array): <code class="prompt">(.1) [1, 2, 3]</code>
+					</p>
+					<p>
+						Remember that <code class="prompt">alphabet `zip` [1 to 26]</code> is a list of tuples like <code>[['A', 1], ['B', 2], ...]</code>. <code>filter even . (.1)</code> applies <code>even . (.1)</code> function on every element of this array, for example: 
+						<code class="prompt">even . (.1) &lt;| ['B', 2]</code>
+					</p>
+				</section>
+				<section x-path="prelude.ls/fold">
+					<meta name='x-pre' value='{map, filter, odd, even, fold, concat-map, zip} = require \prelude-ls'>
+					<h3>Folding</h3>
+					<p>
+						Fold has many names, JavaScript calls it reduce, C# programmers know it as aggregate. Fold is very powerful, every other function that operates on lists in prelude.ls can be written using folds.
+					</p>
+					<p>
+						For example here's how we sum all the elements inside an array:
+						<pre class="prompt" x-no-linefeed>
+						fold ((acc, a) -> acc + a), 0, [1 to 10]
+						</pre>
+						fold takes three parameters:
+						<ul>
+							<li>A function that takes the accumulated result and the next element to be folded</li>
+							<li>The seed (initial value, must have the same type as the expected output)</li>
+							<li>List to be folded</li>
+						</ul>
+						In our type notation:
+						<pre>
+						fold :: ((acc, a) -> acc), acc, [a]
+						</pre>
+					</p>
+					<p>
+						Since <code>(+)</code> is a function, we can shorten our sum expression to:
+						<pre class="prompt" x-no-linefeed>
+						fold (+), 0, [1 to 10]
+						</pre>
+						So we can define sum function like:
+						<pre class="prompt" x-no-linefeed>
+						sum = fold (+), 0
+						</pre>
+						<code>sum</code> takes an array, sums it elements and returns the sum: <code class="prompt">sum [1 to 100]</code>
+					</p>
+					<p>
+						It takes some time to fully appreciate the power of fold, if you have not used functional programming before. <a href="http://preludels.com">prelude.ls</a> comes with a tons of other utility functions!
+					</p>
+				</section>
+			</section>
+			<section x-path="fin">
+				<section x-path="fin/done!">
+					<meta name='x-pre' value='{map, filter, odd, even, fold, concat-map, zip} = require \prelude-ls'>
+					<h3>Excited?</h3>
+					<p>
+						We just scratched the surface of LiveScript in this tutorial. 
+						Check out <a href="http://livescript.net">http://livescript.net</a> for full documentation.
+					</p>
+					<p>
+						Cheers!
 					</p>
 				</section>
 			</section>
 		</div>
+		<nav class="back-next">
+			<a class="prev-step" href="#">&lt;&lt; <span>Back</span></a>
+			<a class="next-step" href="#"><span>Next</span> &gt;&gt;</a>
+		</nav>
 	</body>
 </html>
