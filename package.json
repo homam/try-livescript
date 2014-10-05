@@ -8,7 +8,8 @@
   },
   "devDependencies": {
   	"stylus": ">= 0.42.2",
-  	"LiveScript": "*"
+    "nib": ">= 1.0.4",
+  	"LiveScript": ">= 1.2.0"
   },
   "author": "Homam <homam@live.com> (http://homam.me/)",
   "license": "ISC"

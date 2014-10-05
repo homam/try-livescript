@@ -21,3 +21,4 @@ Thumbs.db
 *.js
 *.css
 temp
+node_modules/

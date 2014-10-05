@@ -24,10 +24,17 @@ window.lsc-console = lsc.console do
 			autocomplete-list = []
 			re = /([\w\-\d]+)\s*=[^=]/ig
 			while (m = re.exec compiled) != null
-				autocomplete-list.push m.1
+				# add - before upper case letters
+				word = m.1.split '' |> foldl do
+					(acc, a) ->
+						return acc + "-" + a.to-lower-case! if acc.length > 0 and a.to-upper-case! == a 
+						acc + a
+					''
+				autocomplete-list.push word
 			autocomplete-history := unique autocomplete-list
 
-			result = eval compiled
+			evaluated = eval compiled
+			result = evaluated
 			return "" if result is undefined
 			if "1.1.1" == result.VERSION
 				result = "{prelude}"
@@ -56,7 +63,7 @@ window.lsc-console = lsc.console do
 
 			if !no-history
 				history.push pre-script if !!pre-script
-				history.push line
+				history.push line if \Function is not typeof! evaluated?.then # do not add promises to the history
 		catch ex
 			result = ex.message
 			class-name = \error
@@ -96,17 +103,17 @@ $ \.prompt .each ->
 	$ @ .click ->
 		is-pre = \PRE == @.tag-name
 
-		x-pre = $ @ .attr \x-pre
-		x-no-history = "String" == typeof! $ @ .attr \x-no-history
+		$me = $ @ 
+		x-pre = $me .attr \x-pre
+		x-no-history = \String == typeof! $me.attr \x-no-history
 
 
 		prompt-text do
 			x-pre
 			x-no-history
-			(if is-pre then "\n" else "") + $ @ .text!
+			(if is-pre and (\String is not typeof! $me.attr \x-no-linefeed) then "\n" else "") + $me.text!
 
 		lsc-console.focus!
-
 
 
 all-paths = do -> first <| ($ 'section[x-path]' .map (-> $ @ .attr \x-path) .to-array!) |> foldl do 
@@ -136,15 +143,40 @@ switch-section = (path) ->
 
 	$current-section := $new-section
 	current-path := path
-	window.location.hash = path
+
+	next-path = get-next-path!
+	prev-path = get-prev-path!
+	$next-section = $ "section[x-path='#{next-path}']"
+	$prev-section = $ "section[x-path='#{prev-path}']"
+
+
+	[
+		[prev-path, ($prev-section.find \h3:first .text!) , ($ \.prev-step)]
+		[next-path, ($next-section.find \h3:first .text!) , ($ \.next-step)]
+	] |> each ([path, title, $a]) ->
+		if !!path
+			$a.css \visibility, \visible
+			$a.attr \href, '#' + path
+			$a.find \span .text title
+		else
+			$a.css \visibility, \hidden
+
 
 window.add-event-listener \hashchange, ->
 	switch-section <| window.location.hash.substr 1
 
 
-switch-next-section = ->
+get-next-path = -> 
 	[_, [_, next-path]] = all-paths |> break-list (== current-path)
-	return switch-section next-path if !!next-path
+	next-path
+
+get-prev-path = ->
+	[[..., prev-path], _] = all-paths |> break-list (== current-path)
+	prev-path
+
+switch-next-section = ->
+	next-path = get-next-path!
+	return window.location.hash = next-path if !!next-path
 	[
 		{
 			msg: "Out of bounds"
@@ -153,8 +185,8 @@ switch-next-section = ->
 	]
 
 switch-prev-section = ->
-	[[..., prev-path], _] = all-paths |> break-list (== current-path)
-	return switch-section prev-path if !!prev-path
+	prev-path = get-prev-path!
+	return window.location.hash = prev-path if !!prev-path
 	[
 		{
 			msg: "Out of bounds"
@@ -163,13 +195,13 @@ switch-prev-section = ->
 	]
 
 
-# we like to indent the pre tags but html does not, so we fix the indented whitespace:
+# we like to indent pre tags but html does not, so we fix the indented whitespaces:
 $pres = $ \pre .each ->
 	$pre = $ @
 	lines = $pre.text!.split '\n'
 	ws = (/^\s+/.exec lines.0)?.0
 	if !!ws
-		lines = lines.map -> it.replace ws, ''
+		lines = lines.map (.replace ws, '')
 		$pre.text <| lines.join '\n' .trim!
 
 
